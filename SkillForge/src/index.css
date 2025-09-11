@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+* {
+  font-family: 'Poppins', sans-serif;
+}
+body {
+  margin: 0;
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(
+    180deg,
+    #6a85f1 0%,   /* Blue top */
+    #9b6bff 100%  /* Purple bottom */
+  );
+  overflow-x: hidden;
+}
+
+/* Grid overlay */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 60px 60px; /* Grid box size */
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* animated rainbow border */
+@keyframes border-animate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.google-border {
+  position: relative;
+  display: inline-block;          /* button ke size ke hisaab se */
+  border-radius: 9999px;          /* pill */
+  padding: 2px;                   /* border thickness */
+  background: linear-gradient(
+    90deg,
+    #4285F4,
+    #EA4335,
+    #FBBC05,
+    #34A853,
+    #4285F4
+  );
+  background-size: 300% 300%;
+  animation: border-animate 5s linear infinite;
+  transition: filter 0.25s ease, transform 0.12s ease;
+  z-index: 0;
+}
+
+/* soft subtle halo on hover that follows the same gradient */
+.google-border::before {
+  content: "";
+  position: absolute;
+  inset: -6px;               /* glow spread */
+  border-radius: inherit;
+  background: inherit;       /* same gradient as border */
+  background-size: inherit;
+  animation: inherit;
+  filter: blur(10px);
+  opacity: 0;
+  transition: opacity 0.28s ease;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.google-border:hover::before {
+  opacity: 0.35; /* light subtle glow on hover */
+}
+
+/* inner content area */
+.google-border > .inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.25rem 0.85rem;     /* adjust for compactness */
+  border-radius: 9999px;
+  background: #ffffff;          /* inner white */
+  font-weight: 600;
+  font-size: 13px;
+  color: #111827;               /* gray-900 */
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+/* small active/press feedback */
+.google-border:active { transform: translateY(1px) scale(0.998); }
+
+@keyframes text-shine {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-text-shine {
+  animation: text-shine 4s ease-in-out infinite;
+}
+
+.glow-text {
+  text-shadow: 0 0 8px rgba(255, 147, 36, 0.6), 
+               0 0 16px rgba(252, 215, 96, 0.5);
+}
+
