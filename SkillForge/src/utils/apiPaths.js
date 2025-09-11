@@ -4,10 +4,7 @@
 
 const hostname = window.location.hostname;
 
-export const BASE_URL =
-  hostname === "localhost"
-    ? "import.meta.env.VITE_BASE_UR"
-    : `http://${hostname}:8000`;
+export const BASE_URL = "https://skillforge-ainterview-prep.onrender.com"
 
   
 export const API_PATHS = {
