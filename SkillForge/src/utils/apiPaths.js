@@ -4,7 +4,11 @@
 
 const hostname = window.location.hostname;
 
-export const BASE_URL =import.meta.env.VITE_BASE_URL;
+export const BASE_URL =
+  hostname === "localhost"
+    ? "import.meta.env.VITE_BASE_UR"
+    : `http://${hostname}:8000`;
+
   
 export const API_PATHS = {
   AUTH: {
