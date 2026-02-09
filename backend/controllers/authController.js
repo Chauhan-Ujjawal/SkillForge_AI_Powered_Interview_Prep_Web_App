@@ -7,7 +7,7 @@ const generateToken =(userId)=>{
 }
  //Registering a new user
  //post/API/AUTH/REGISTER
- //Public 
+ //Public
 const registerUser = async (req,res) =>{
     try{
         const {name,email,password,profileImageUrl}=req.body
