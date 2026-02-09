@@ -1,10 +1,11 @@
-
 const { GoogleGenAI } = require("@google/genai");
-const { conceptExplainPrompt, questionAnswerPrompt } = require("../utils/prompts");
+const { questionAnswerPrompt } = require("../utils/prompts");
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const generateInterviewQuestions = async (req, res) => {
+  let rawText = "";
+
   try {
     const { role, experience, topicsToFocus, numberOfQuestions } = req.body;
 
@@ -12,28 +13,41 @@ const generateInterviewQuestions = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const prompt = questionAnswerPrompt(
-      role,
-      experience,
-      topicsToFocus,
-      numberOfQuestions
-    );
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({ message: "Missing GEMINI_API_KEY on server" });
+    }
 
+    const prompt = questionAnswerPrompt(role, experience, topicsToFocus, numberOfQuestions);
+
+    // ✅ Use ONE consistent @google/genai method
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash-lite",
       contents: prompt,
     });
 
-    const rawText = response.text; // ✅ @google/genai gives .text
+    rawText = response.text || "";
+
     const cleanedText = rawText
       .replace(/^```json\s*/i, "")
       .replace(/```$/i, "")
       .trim();
 
-    const data = JSON.parse(cleanedText);
+    let data;
+    try {
+      data = JSON.parse(cleanedText);
+    } catch (e) {
+      // ✅ This tells you exactly what Gemini returned (so you can fix prompt/cleaning)
+      return res.status(500).json({
+        message: "Gemini returned non-JSON (parse failed)",
+        parseError: e.message,
+        rawPreview: cleanedText.slice(0, 400),
+      });
+    }
+
     return res.status(200).json(data);
   } catch (error) {
     console.error("AI ERROR →", error);
+    console.error("AI RAW TEXT →", rawText);
     return res.status(500).json({
       message: "Failed to generate questions",
       error: error.message,
