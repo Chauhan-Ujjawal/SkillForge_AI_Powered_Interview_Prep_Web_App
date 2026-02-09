@@ -22,7 +22,7 @@ app.use(
     })
 );
 // handle preflight requests
-app.options("/*", cors());
+app.options(cors());
 
 //Middleware
 app.use(express.json());
