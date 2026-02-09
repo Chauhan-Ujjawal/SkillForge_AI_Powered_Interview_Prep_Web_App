@@ -19,29 +19,25 @@ const generateInterviewQuestions = async (req, res) => {
       numberOfQuestions
     );
 
-    // Correct Gemini API usage
-    const model = ai.getGenerativeModel({
-      model: "gemini-2.0-flash-lite"
+    const response = await ai.models.generateContent({
+      model: "gemini-2.0-flash-lite",
+      contents: prompt,
     });
 
-    const result = await model.generateContent(prompt);
-
-    const rawText = result.response.text();
-
+    const rawText = response.text; // ✅ @google/genai gives .text
     const cleanedText = rawText
-      .replace(/^```json\s*/, "")
-      .replace(/```$/, "")
+      .replace(/^```json\s*/i, "")
+      .replace(/```$/i, "")
       .trim();
 
     const data = JSON.parse(cleanedText);
-
     return res.status(200).json(data);
-
   } catch (error) {
-    console.error("AI ERROR →", error); // helpful for debugging
-    return res
-      .status(500)
-      .json({ message: "Failed to generate questions", error: error.message });
+    console.error("AI ERROR →", error);
+    return res.status(500).json({
+      message: "Failed to generate questions",
+      error: error.message,
+    });
   }
 };
 
