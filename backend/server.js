@@ -15,11 +15,14 @@ connectDB()
 //middleware to handle CORS
 app.use(
     cors({
-        origins:"*",
-        methods:["GET","POST","PUT","DELETE"],
-        allowedHeaders:["Content-Type","Authorization"],
+        origin: "*",
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+        credentials: true,
     })
 );
+// handle preflight requests
+app.options("*", cors());
 
 //Middleware
 app.use(express.json());
